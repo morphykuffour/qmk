@@ -5,7 +5,7 @@
 
 #include QMK_KEYBOARD_H
 
-#include "manna-harbour_miryoku.h"
+#include "morphy_miryoku.h"
 
 enum layers { MIRYOKU_LAYER_NAMES };
 
@@ -19,27 +19,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [FUN]    = U_MACRO_VA_ARGS(LAYOUT_miryoku, MIRYOKU_LAYER_FUN),
   [BUTTON] = U_MACRO_VA_ARGS(LAYOUT_miryoku, MIRYOKU_LAYER_BUTTON)
 };
-
-LEADER_EXTERNS();
-// use leader keys for i3
-void matrix_scan_user(void) {
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-
-    // Replace the sequences below with your own sequences.
-    SEQ_ONE_KEY(KC_T) {
-      // When I press KC_LEAD and then T, this sends CTRL + SHIFT + T
-      SEND_STRING(SS_LCTRL(SS_LSFT("t")));
-    }
-    // Note: This is not an array, you don't need to put any commas
-    // or semicolons between sequences.
-    SEQ_TWO_KEYS(KC_N, KC_T) {
-      // When I press KC_LEAD and then N followed by T, this sends CTRL + T
-      SEND_STRING(SS_LCTRL("t"));
-    }
-  }
-}
 
 #if defined (MIRYOKU_KLUDGE_THUMBCOMBOS)
 const uint16_t PROGMEM thumbcombos_base_right[] = {LT(SYM, KC_ENT), LT(NUM, KC_BSPC), COMBO_END};

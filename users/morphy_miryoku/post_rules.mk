@@ -1,7 +1,7 @@
 # Copyright 2019 Manna Harbour
 # https://github.com/manna-harbour/miryoku
 
-SRC += manna-harbour_miryoku.c # keymaps
+SRC += morphy_miryoku.c # keymaps
 
 # alternative layouts:
 
