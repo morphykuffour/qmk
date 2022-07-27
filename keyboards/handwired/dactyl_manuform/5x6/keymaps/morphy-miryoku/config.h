@@ -6,6 +6,7 @@
 #pragma once
 
 #define XXX KC_NO
+#define ADV MT(MOD_LCTL,KC_ESC)
 
 #define LAYOUT_miryoku(\
      K00, K01, K02, K03, K04,                         K05, K06, K07, K08, K09, \
@@ -14,12 +15,13 @@
      N30, N31, K32, K33, K34,                         K35, K36, K37, N38, N39 \
 ) \
 LAYOUT_5x6( \
-KC_ESC,   KC_1, KC_2, KC_3, KC_4, KC_5,                            KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSPC, \
-KC_TAB,   K00,  K01,  K02,  K03,  K04,                             K05,  K06,  K07,  K08,  K09,  KC_MINS, \
-KC_LSHFT, K10,  K11,  K12,  K13,  K14,                             K15,  K16,  K17,  K18,  K19,  KC_QUOT, \
-KC_LCTL,  K20,  K21,  K22,  K23,  K24,                             K25,  K26,  K27,  K28,  K29,  KC_BSLASH, \
-                KC_LBRC, KC_RBRC,                                              KC_PLUS, KC_EQL, \
-                                K32, K33,                          K36, K37, \
-                                          K34, KC_SLCK,     KC_VOLU, K35, \
-                                          XXX, KC_PAUS,     KC_VOLD, XXX \
+KC_F1,    KC_F2, KC_F3, KC_F4, KC_F5,KC_F6,                           KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, \
+KC_PGUP,  K00,   K01,   K02,   K03,  K04,                             K05,   K06,   K07,   K08,  K09,  KC_MINS, \
+ADV,      K10,   K11,   K12,   K13,  K14,                             K15,   K16,   K17,   K18,  K19,  KC_QUOT, \
+KC_PGDN,  K20,   K21,   K22,   K23,  K24,                             K25,   K26,   K27,   K28,  K29,  KC_BSLASH, \
+                 XXX, K32,                                                  K37, XXX, \
+                                K34, K33,                          K36, K35, \
+                                          KC_LEAD, XXX,         XXX, XXX, \
+                                          XXX, XXX,         XXX, XXX \
 )
+
