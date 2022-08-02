@@ -9,8 +9,8 @@
 
 // custom TODO micmic precondition dactyl layout
 #define ADV MT(MOD_LCTL, KC_ESC)
-#define NAV MT(RAISE, KC_TAB) // TODO fix
-#define SYM MT(LOWER, KC_ENT) // TODO fix
+#define NAV_TAB LT(_RAISE, KC_TAB)
+#define SYM_ENT LT(_LOWER, KC_ENT)
 
 #define HO_S MT(MOD_LALT,KC_S)
 #define HO_T MT(MOD_LGUI,KC_T)
@@ -24,7 +24,6 @@ enum custom_keycodes {
     // it can be called REP if you want but "REPEAT" is clearer and still fits under the 8 char "limit"
     REPEAT = SAFE_RANGE,
 };
-
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_5x6(
