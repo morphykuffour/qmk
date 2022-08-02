@@ -143,14 +143,14 @@ void matrix_scan_user(void) {
     }
     // i3 move left
     SEQ_TWO_KEYS(KC_N, KC_N) {
-      SEND_STRING(SS_LALT(SS_LSFT("t")));
+      SEND_STRING(SS_LALT(SS_LSFT("h")));
     }
     
     // i3 focus right
     SEQ_ONE_KEY(KC_I) {
       SEND_STRING(SS_LALT("l"));
     }
-    // i3 move left
+    // i3 move right
     SEQ_TWO_KEYS(KC_I, KC_I) {
       SEND_STRING(SS_LALT(SS_LSFT("l")));
     }
@@ -159,7 +159,7 @@ void matrix_scan_user(void) {
     SEQ_ONE_KEY(KC_U) {
       SEND_STRING(SS_LALT("k"));
     }
-    // i3 move left
+    // i3 move up
     SEQ_TWO_KEYS(KC_U, KC_U) {
       SEND_STRING(SS_LALT(SS_LSFT("k")));
     }
@@ -168,7 +168,7 @@ void matrix_scan_user(void) {
     SEQ_ONE_KEY(KC_E) {
       SEND_STRING(SS_LALT("j"));
     }
-    // i3 move left
+    // i3 move down
     SEQ_TWO_KEYS(KC_E, KC_E) {
       SEND_STRING(SS_LALT(SS_LSFT("j")));
     }
