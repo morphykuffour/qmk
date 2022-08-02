@@ -1,1 +1,2 @@
 LEADER_ENABLE = yes
+COMMAND_ENABLE = yes

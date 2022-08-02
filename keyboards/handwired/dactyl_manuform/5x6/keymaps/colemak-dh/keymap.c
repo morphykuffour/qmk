@@ -9,8 +9,8 @@
 
 // custom TODO micmic precondition dactyl layout
 #define ADV MT(MOD_LCTL, KC_ESC)
-#define NAV MT(RAISE, KC_TAB)
-#define SYM MT(LOWER, KC_ENT)
+#define NAV MT(RAISE, KC_TAB) // TODO fix
+#define SYM MT(LOWER, KC_ENT) // TODO fix
 
 #define HO_S MT(MOD_LALT,KC_S)
 #define HO_T MT(MOD_LGUI,KC_T)
@@ -33,7 +33,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ADV,     KC_A  , KC_R  , HO_S  , HO_T  , KC_G  ,                         KC_M  , HO_N  , HO_E  , KC_I  ,KC_O,KC_QUOT,
         KC_LSFT, KC_Z  , KC_X  , KC_C  , KC_D  , KC_V  ,                         KC_K  , KC_H  , KC_COMM,KC_DOT ,KC_SLSH,KC_BSLASH,
                          KC_LBRC,KC_RBRC,                                                       KC_PLUS, KC_EQL,
-                                         NAV,KC_SPC,                             KC_BSPC, SYM,
+                                         RAISE,KC_SPC,                             KC_BSPC, LOWER,
                                          REPEAT,KC_LEAD,                         KC_END,  KC_DEL,
                                          KC_BSPC, KC_GRV,                        KC_LGUI, KC_LALT
     ),
@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,_______,_______,_______,_______,KC_LBRC,                        KC_RBRC, KC_P7 , KC_P8 , KC_P9 ,_______,KC_PLUS,
         _______,KC_HOME,KC_PGUP,KC_PGDN,KC_END ,KC_LPRN,                        KC_RPRN, KC_P4 , KC_P5 , KC_P6 ,KC_MINS,KC_PIPE,
         _______,_______,_______,_______,_______,_______,                        _______, KC_P1 , KC_P2 , KC_P3 ,KC_EQL ,KC_UNDS,
-                                                _______,KC_PSCR,            _______, KC_P0,
+                         _______,KC_PSCR,                                                       _______, KC_P0,
                                                 _______,_______,            _______,_______,
                                                 _______,_______,            _______,_______,
                                                 _______,_______,            _______,_______
@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           _______,_______,_______,_______,_______,KC_LBRC,                        KC_RBRC,_______,KC_NLCK,KC_INS ,KC_SLCK,KC_MUTE,
           _______,KC_LEFT,KC_UP  ,KC_DOWN,KC_RGHT,KC_LPRN,                        KC_RPRN,KC_MPRV,KC_MPLY,KC_MNXT,_______,KC_VOLU,
           _______,_______,_______,_______,_______,_______,                        _______,_______,_______,_______,_______,KC_VOLD,
-                                                  _______,_______,            KC_EQL ,_______,
+                          QK_BOOT,_______,                                                      KC_EQL ,_______,
                                                   _______,_______,            _______,_______,
                                                   _______,_______,            _______,_______,
                                                   _______,_______,            _______,_______
@@ -122,3 +122,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+LEADER_EXTERNS();
+
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+
+    // // Replace the sequences below with your own sequences.
+    // SEQ_ONE_KEY(KC_T) {
+    //   // When I press KC_LEAD and then T, this sends CTRL + SHIFT + T
+    //   SEND_STRING(SS_LCTRL(SS_LSFT("t")));
+    // }
+    // // Note: This is not an array, you don't need to put any commas
+    // // or semicolons between sequences.
+    // SEQ_TWO_KEYS(KC_N, KC_T) {
+    //   // When I press KC_LEAD and then N followed by T, this sends CTRL + T
+    //   SEND_STRING(SS_LCTRL("t"));
+    // }
+    
+    // open flameshot
+    SEQ_ONE_KEY(KC_S) {
+      SEND_STRING(SS_LALT("s"));
+    }
+  }
+}
