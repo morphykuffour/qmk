@@ -17,8 +17,6 @@
 #define HO_N MT(MOD_RGUI,KC_N)
 #define HO_E MT(MOD_RALT,KC_E)
 
-// interact with keyd with KC_LEAD
-
 // repeat last key
 enum custom_keycodes {
     // it can be called REP if you want but "REPEAT" is clearer and still fits under the 8 char "limit"
@@ -121,26 +119,51 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+// use leader key with i3 window manager
 LEADER_EXTERNS();
 
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
-
-    // // Replace the sequences below with your own sequences.
-    // SEQ_ONE_KEY(KC_T) {
-    //   // When I press KC_LEAD and then T, this sends CTRL + SHIFT + T
-    //   SEND_STRING(SS_LCTRL(SS_LSFT("t")));
-    // }
-    // // Note: This is not an array, you don't need to put any commas
-    // // or semicolons between sequences.
-    // SEQ_TWO_KEYS(KC_N, KC_T) {
-    //   // When I press KC_LEAD and then N followed by T, this sends CTRL + T
-    //   SEND_STRING(SS_LCTRL("t"));
-    // }
+    // TODO move to sxhkd with MOD_MEH
+    // i3 focus left
+    SEQ_ONE_KEY(KC_N) {
+      SEND_STRING(SS_LALT("h"));
+    }
+    // i3 move left
+    SEQ_TWO_KEYS(KC_N, KC_N) {
+      SEND_STRING(SS_LALT(SS_LSFT("t")));
+    }
     
-    // open flameshot
+    // i3 focus right
+    SEQ_ONE_KEY(KC_I) {
+      SEND_STRING(SS_LALT("l"));
+    }
+    // i3 move left
+    SEQ_TWO_KEYS(KC_I, KC_I) {
+      SEND_STRING(SS_LALT(SS_LSFT("l")));
+    }
+
+    // i3 focus up
+    SEQ_ONE_KEY(KC_U) {
+      SEND_STRING(SS_LALT("k"));
+    }
+    // i3 move left
+    SEQ_TWO_KEYS(KC_U, KC_U) {
+      SEND_STRING(SS_LALT(SS_LSFT("k")));
+    }
+
+    // i3 focus down
+    SEQ_ONE_KEY(KC_E) {
+      SEND_STRING(SS_LALT("j"));
+    }
+    // i3 move left
+    SEQ_TWO_KEYS(KC_E, KC_E) {
+      SEND_STRING(SS_LALT(SS_LSFT("j")));
+    }
+
+    // i3 open flameshot
     SEQ_ONE_KEY(KC_S) {
       SEND_STRING(SS_LALT("s"));
     }
