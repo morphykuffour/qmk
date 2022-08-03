@@ -29,6 +29,7 @@ enum custom_keycodes {
     UPDIR =  SAFE_RANGE,
     PWDIR,
     GITST,
+    GITGP,
     REPEAT,
     TMUXESC,
     SRCHSEL,
@@ -38,8 +39,8 @@ enum custom_keycodes {
     // THMBUP =  SAFE_RANGE,
 };
 
-// #define COPY_PASTA  M(0)  // Macro for copy on press and paste on release
-// #define ALT_TAB     M(1)  // Macro for Alt-Tab
+#define COPY_PASTA  M(0)  // Macro for copy on press and paste on release
+#define ALT_TAB     M(1)  // Macro for Alt-Tab
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_5x6(
@@ -76,6 +77,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                   _______,_______,            _______,_______
     ),
 
+    // [_EXTEND] = LAYOUT_5x6(
+    //       KC_F12 , KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 ,                        KC_F6  , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,
+    //       _______,_______,_______,_______,_______,KC_LBRC,                        KC_RBRC,_______,KC_NLCK,KC_INS ,KC_SLCK,KC_MUTE,
+    //       _______,KC_LEFT,KC_UP  ,KC_DOWN,KC_RGHT,KC_LPRN,                        KC_RPRN,KC_MPRV,KC_MPLY,KC_MNXT,_______,KC_VOLU,
+    //       _______,_______,_______,_______,_______,_______,                        _______,_______,_______,_______,_______,KC_VOLD,
+    //                       QK_BOOT,_______,                                                      KC_EQL , QK_BOOT,
+    //                                               _______,_______,            _______,_______,
+    //                                               _______,_______,            _______,_______,
+    //                                               _______,_______,            _______,_______
+    // )
+
     [_EXTEND] = LAYOUT_5x6(
         KC_F12 , KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 ,                        KC_F6  , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,
         _______,KC_WBAK,KC_MS_U,KC_WFWD,_______,_______,                        _______,_______,KC_UP,_______,_______,_______,                          
@@ -86,6 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 KC_BTN3,_______,               _______,_______,                        
                                                 _______,_______,                _______,_______
     )
+
 };
    
 // https://gist.github.com/NotGate/3e3d8ab81300a86522b2c2549f99b131 
@@ -313,7 +326,7 @@ void matrix_scan_user(void) {
   }
 }
 
-// // COPY_PASTA
+// COPY_PASTA
 // const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 //     if (!eeconfig_is_enabled()) {
 //         eeconfig_init();
