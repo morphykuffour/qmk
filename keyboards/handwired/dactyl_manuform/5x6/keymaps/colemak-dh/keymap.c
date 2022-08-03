@@ -10,7 +10,7 @@
 
 // custom keycodes
 #define VIM MT(MOD_LCTL, KC_ESC)
-#define NAV_TAB LT(_RAISE, KC_TAB)
+#define NAV_ALT LT(_RAISE, KC_LEFT_ALT)
 #define SYM_ENT LT(_LOWER, KC_ENT)
 #define EXTEND TG(_EXTEND) 
 
@@ -19,10 +19,27 @@
 // #define HO_N MT(MOD_RGUI,KC_N)
 // #define HO_E MT(MOD_RALT,KC_E)
 
+#define CC_UNDO LCTL(KC_Z)
+#define CC_REDO LCTL(KC_Y)
+#define CC_CUT  LCTL(KC_X)
+
+// macros 
 enum custom_keycodes {
     // repeat last key
-    REPEAT = SAFE_RANGE,
+    UPDIR =  SAFE_RANGE,
+    PWDIR,
+    GITST,
+    REPEAT,
+    TMUXESC,
+    SRCHSEL,
+    JOINLN,
+    // ARROW =  SAFE_RANGE,
+    // DASH =  SAFE_RANGE,
+    // THMBUP =  SAFE_RANGE,
 };
+
+// #define COPY_PASTA  M(0)  // Macro for copy on press and paste on release
+// #define ALT_TAB     M(1)  // Macro for Alt-Tab
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_5x6(
@@ -31,9 +48,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         VIM,     KC_A  , KC_R  , KC_S  , KC_T  , KC_G  ,                         KC_M  , KC_N  , KC_E  , KC_I  , KC_O,   KC_QUOT,
         KC_LSFT, KC_Z  , KC_X  , KC_C  , KC_D  , KC_V  ,                         KC_K  , KC_H  , KC_COMM,KC_DOT ,KC_SLSH,KC_BSLASH,
                          KC_LBRC,KC_RBRC,                                                        KC_PLUS, KC_EQL,
-                                         NAV_TAB,KC_SPC,                         KC_BSPC, SYM_ENT,
-                                         REPEAT,KC_LEAD,                         KC_END,  KC_DEL,
-                                         KC_BSPC, KC_GRV,                        EXTEND, KC_LGUI
+                                         NAV_ALT,KC_SPC,                         KC_BSPC, SYM_ENT,
+                                         REPEAT, KC_LEAD,                        KC_END,  KC_DEL,
+                                         KC_BSPC,KC_GRV,                         EXTEND, KC_LGUI
     ),
 
     [_LOWER] = LAYOUT_5x6(
@@ -61,16 +78,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_5x6(
         KC_F12 , KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 ,                        KC_F6  , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,
-        _______,_______,_______,_______,_______,_______,                        _______,KC_WBAK,KC_MS_U,KC_WFWD,_______,_______,
-        _______,_______,_______,_______,_______,_______,                        _______,KC_MS_L,KC_MS_D,KC_MS_R,_______,_______,
-        _______,_______,KC_CUT,KC_COPY,KC_PSTE,_______,                        _______,KC_BTN3,KC_WH_D,KC_WH_U,_______,_______,
-                       _______,_______,                                                        _______,_______,
-                                        _______,_______,                        KC_BTN1,KC_BTN2,
-                                        _______,_______,                        KC_BTN3,_______,
-                                        _______,_______,                        _______,_______
+        _______,KC_WBAK,KC_MS_U,KC_WFWD,_______,_______,                        _______,_______,KC_UP,_______,_______,_______,                          
+        _______,KC_MS_L,KC_MS_D,KC_MS_R,_______,_______,                        _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,                        
+        _______,CC_UNDO,CC_REDO,CC_CUT ,_______,_______,                      _______,KC_BTN3,KC_WH_D,KC_WH_U,_______,_______,                        
+                           UPDIR,PWDIR,                                                     GITST,GITGP,
+                                                KC_BTN1,KC_BTN2,               _______,_______,                        
+                                                KC_BTN3,_______,               _______,_______,                        
+                                                _______,_______,                _______,_______
     )
 };
-
+   
 // https://gist.github.com/NotGate/3e3d8ab81300a86522b2c2549f99b131 
 // Used to extract the basic tapping keycode from a dual-role key.
 // Example: GET_TAP_KC(MT(MOD_RSFT, KC_E)) == KC_E
@@ -122,12 +139,123 @@ void process_repeat_key(uint16_t keycode, const keyrecord_t *record) {
     }
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+//     process_repeat_key(keycode, record);
+//     mod_state = get_mods();
+//     oneshot_mod_state = get_oneshot_mods();
+//
+//     // macros
+//   if (record->event.pressed) {
+//     switch (keycode) {
+//         case UPDIR:  // Types ../ to go up a directory on the shell.
+//             SEND_STRING("../");
+//           return false;
+//
+//         case PWDIR:  // Types ../ to go up a directory on the shell.
+//             SEND_STRING("pwd\n");
+//           return false;
+//
+//         case GITST:  // git status
+//             SEND_STRING("gs\n");
+//           return false;
+//         
+//         case GITGP:  // git status
+//             SEND_STRING("gp\n");
+//           return false;
+//
+//           case JOINLN:  // Join lines like Vim's `J` command.
+//             SEND_STRING(
+//                 SS_TAP(X_END) SS_TAP(X_DEL)
+//                 SS_TAP(X_SPC)
+//                 SS_LCTL(
+//                   SS_TAP(X_RGHT) SS_TAP(X_LEFT)
+//                   SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
+//                 SS_TAP(X_SPC));
+//             return false;
+//     }
+//   }
+//     return true;
+// };
+
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+
+  // if (!process_achordion(keycode, record)) { return false; }
+  // if (!process_autocorrection(keycode, record)) { return false; }
+  // if (!process_custom_shift_keys(keycode, record)) { return false; }
+  // if (!process_select_word(keycode, record, SELWORD)) { return false; }
     process_repeat_key(keycode, record);
     mod_state = get_mods();
     oneshot_mod_state = get_oneshot_mods();
-    return true;
-};
+
+  if (record->event.pressed) {
+    switch (keycode) {
+      case UPDIR:
+        SEND_STRING("../");
+        return false;
+
+        case PWDIR:  // pwd
+            SEND_STRING("pwd\r\n");
+          return false;
+
+        case GITST:  // git status
+            SEND_STRING("gs\r\n");
+          return false;
+
+        case GITGP:  // git status
+            SEND_STRING("gp\r\n");
+          return false;
+
+      case TMUXESC:  // Enter copy mode in Tmux.
+        SEND_STRING(SS_LCTL("a") SS_TAP(X_ESC));
+        return false;
+
+      case SRCHSEL:  // Searches the current selection in a new tab.
+        // Mac users, change LCTL to LGUI.
+        SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+        return false;
+
+      case JOINLN:  // Join lines like Vim's `J` command.
+        SEND_STRING( // Go to the end of the line and tap delete.
+            SS_TAP(X_END) SS_TAP(X_DEL)
+            // In case this has joined two words together, insert one space.
+            SS_TAP(X_SPC)
+            SS_LCTL(
+              // Go to the beginning of the next word.
+              SS_TAP(X_RGHT) SS_TAP(X_LEFT)
+              // Select back to the end of the previous word. This should select
+              // all spaces and tabs between the joined lines from indentation
+              // or trailing whitespace, including the space inserted earlier.
+              SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
+            // Replace the selection with a single space.
+            SS_TAP(X_SPC));
+        return false;
+
+      // The following cases type a few Unicode symbols.
+      //
+      // `send_unicode_hex_string()` is deprecated. The docs suggest to ensure
+      // keymap.c is UTF-8 encoded and write literal Unicode characters in the
+      // string passed to `send_unicode_string()`. Unfortunately, terminals can
+      // have problems displaying Unicode correctly with monospaced width (or
+      // at all). So we take another approach: write escape codes `\xhh` for the
+      // UTF-8 encoding.
+
+      // case DASH:  // En dash, or em dash when shifted.
+      //   send_unicode_string(shifted ? "\xe2\x80\x94" : "\xe2\x80\x93");
+      //   return false;
+      //
+      // case ARROW:  // -> Unicode arrow, or => when shifted.
+      //   send_unicode_string(shifted ? "\xe2\x87\x92" : "\xe2\x86\x92");
+      //   return false;
+      //
+      // case THMBUP:  // Thumbs up emoji, or party emoji when shifted.
+      //   send_unicode_string(shifted ? "\xf0\x9f\xa5\xb3" : "\xf0\x9f\x91\x8d");
+      //   return false;
+    }
+  }
+
+  return true;
+}
 
 // use leader key with i3 window manager
 LEADER_EXTERNS();
@@ -184,3 +312,24 @@ void matrix_scan_user(void) {
     }
   }
 }
+
+// // COPY_PASTA
+// const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
+//     if (!eeconfig_is_enabled()) {
+//         eeconfig_init();
+//     }
+//
+// 	switch(id) {
+// 		case 0: {
+// 			if (record->event.pressed) {
+// 				return MACRO( D(LCTL), T(C), U(LCTL), END  );
+// 			} else {
+// 				return MACRO( D(LCTL), T(V), U(LCTL), END  );
+// 			}
+//         case 1:
+//             return (record->event.pressed ? MACRO( D(LALT), D(TAB), END ) : MACRO( U(TAB), END ));
+// 			break;
+// 		}
+// 	}
+// 	return MACRO_NONE;
+// };
