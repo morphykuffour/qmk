@@ -137,6 +137,11 @@ void matrix_scan_user(void) {
     leading = false;
     leader_end();
     // TODO move to sxhkd with MOD_MEH
+
+    // i3 new terminal
+    SEQ_TWO_KEYS(KC_N, KC_E) {
+      SEND_STRING(SS_LALT(KC_ENTER));
+    }
     // i3 focus left
     SEQ_ONE_KEY(KC_N) {
       SEND_STRING(SS_LALT("h"));
