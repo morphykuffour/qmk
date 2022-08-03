@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+#include "features/select_word.h"
 
 #define _QWERTY 0
 #define _LOWER 1
@@ -13,6 +14,7 @@
 #define NAV_TAB LT(_RAISE, KC_TAB)
 #define SYM_ENT LT(_LOWER, KC_ENT)
 #define SPC_ALT MT(MOD_LALT, KC_SPACE)
+#define CTL_BSP MT(MOD_LCTL, KC_BSPC)
 #define EXTEND TG(_EXTEND) 
 
 // #define HO_S MT(MOD_LALT,KC_S)
@@ -36,6 +38,7 @@ enum custom_keycodes {
     SRCHSEL,
     JOINLN,
     COPY_PASTA,
+    SELWORD,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -45,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         VIM,     KC_A  , KC_R  , KC_S  , KC_T  , KC_G  ,                         KC_M  , KC_N  , KC_E  , KC_I  , KC_O,   KC_QUOT,
         KC_LSFT, KC_Z  , KC_X  , KC_C  , KC_D  , KC_V  ,                         KC_K  , KC_H  , KC_COMM,KC_DOT ,KC_SLSH,KC_BSLASH,
                          KC_LBRC,KC_RBRC,                                                        KC_PLUS, KC_EQL,
-                                         NAV_TAB,SPC_ALT,                         KC_BSPC, SYM_ENT,
+                                         NAV_TAB,SPC_ALT,                        CTL_BSP, SYM_ENT,
                                          REPEAT, KC_LEAD,                        KC_END,  KC_DEL,
                                          KC_BSPC,KC_GRV,                         EXTEND, KC_LGUI
     ),
@@ -74,16 +77,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_EXTEND] = LAYOUT_5x6(
-        KC_F12 , KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 ,                        KC_F6  , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,
-        _______,KC_WBAK,KC_MS_U,KC_WFWD,_______,_______,                        _______,_______,KC_UP,_______,_______,_______,                          
-        _______,KC_MS_L,KC_MS_D,KC_MS_R,_______,_______,                        _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,                        
-        _______,CC_UNDO,CC_REDO,CC_CUT ,_______,COPY_PASTA,                      _______,KC_BTN3,KC_WH_D,KC_WH_U,_______,_______,                        
+          KC_F12 , KC_F1 , KC_F2 , KC_F3 , KC_F4 , KC_F5 ,                        KC_F6  , KC_F7 , KC_F8 , KC_F9 ,KC_F10 ,KC_F11 ,
+          KC_WH_U,SELWORD,KC_WBAK,KC_MS_U,KC_WFWD,_______,                        _______,_______,KC_UP,_______,_______,_______,                          
+          _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,                        _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,                        
+          KC_WH_D,CC_UNDO,CC_REDO,CC_CUT,_______,COPY_PASTA,                        _______,_______,_______,_______,_______,_______,
                            UPDIR,PWDIR,                                                     GITST,GITGP,
-                                                KC_BTN1,KC_BTN2,               _______,_______,                        
-                                                KC_BTN3,_______,               _______,_______,                        
-                                                _______,_______,                _______,_______
+                                                  KC_BTN1,KC_BTN2,            _______,_______,                        
+                                                  KC_BTN3,_______,            _______,_______,                        
+                                                  _______,_______,            _______,_______
     )
-
 };
    
 // https://gist.github.com/NotGate/3e3d8ab81300a86522b2c2549f99b131 
@@ -142,62 +144,60 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   // if (!process_achordion(keycode, record)) { return false; }
   // if (!process_autocorrection(keycode, record)) { return false; }
   // if (!process_custom_shift_keys(keycode, record)) { return false; }
-  // if (!process_select_word(keycode, record, SELWORD)) { return false; }
+  if (!process_select_word(keycode, record, SELWORD)) { return false; }
     process_repeat_key(keycode, record);
     mod_state = get_mods();
     oneshot_mod_state = get_oneshot_mods();
 
   if (record->event.pressed) {
     switch (keycode) {
-      case COPY_PASTA:
-        if (record->event.pressed) {
-            // when keycode COPY_PASTA is pressed
-            SEND_STRING(SS_LCTL("c"));
-        } else {
-            // when keycode COPY_PASTA is released
-            SEND_STRING(SS_LCTL("v"));
-        }
-        return false;
-      case UPDIR:
-        SEND_STRING("../");
-        return false;
+        case COPY_PASTA:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL("c"));
+            } else {
+                SEND_STRING(SS_LCTL("v"));
+            }
+            return true; // might cause issues not tested
+        case UPDIR:
+            SEND_STRING("../");
+            return false;
 
         case PWDIR:  // pwd
-            SEND_STRING("pwd\r\n");
-          return false;
+                SEND_STRING("pwd\r\n");
+              return false;
 
         case GITST:  // git status
-            SEND_STRING("gs\r\n");
-          return false;
+                SEND_STRING("gs\r\n");
+              return false;
 
         case GITGP:  // git status
-            SEND_STRING("gp\r\n");
-          return false;
+                SEND_STRING("gp\r\n");
+              return false;
 
-      case TMUXESC:  // Enter copy mode in Tmux.
-        SEND_STRING(SS_LCTL("a") SS_TAP(X_ESC));
-        return false;
+        case TMUXESC:  // Enter copy mode in Tmux.
+            SEND_STRING(SS_LCTL("a") SS_TAP(X_ESC));
+            return false;
 
-      case SRCHSEL:  // Searches the current selection in a new tab.
-        // Mac users, change LCTL to LGUI.
-        SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
-        return false;
+          case SRCHSEL:  // Searches the current selection in a new tab.
+            // Mac users, change LCTL to LGUI.
+            SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+            return false;
 
-      case JOINLN:  // Join lines like Vim's `J` command.
-        SEND_STRING( // Go to the end of the line and tap delete.
-            SS_TAP(X_END) SS_TAP(X_DEL)
-            // In case this has joined two words together, insert one space.
-            SS_TAP(X_SPC)
-            SS_LCTL(
-              // Go to the beginning of the next word.
-              SS_TAP(X_RGHT) SS_TAP(X_LEFT)
-              // Select back to the end of the previous word. This should select
-              // all spaces and tabs between the joined lines from indentation
-              // or trailing whitespace, including the space inserted earlier.
-              SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
-            // Replace the selection with a single space.
-            SS_TAP(X_SPC));
-        return false;
+          case JOINLN:  // Join lines like Vim's `J` command.
+            SEND_STRING( // Go to the end of the line and tap delete.
+                SS_TAP(X_END) SS_TAP(X_DEL)
+                // In case this has joined two words together, insert one space.
+                SS_TAP(X_SPC)
+                SS_LCTL(
+                  // Go to the beginning of the next word.
+                  SS_TAP(X_RGHT) SS_TAP(X_LEFT)
+                  // Select back to the end of the previous word. This should select
+                  // all spaces and tabs between the joined lines from indentation
+                  // or trailing whitespace, including the space inserted earlier.
+                  SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
+                // Replace the selection with a single space.
+                SS_TAP(X_SPC));
+            return false;
     }
   }
   return true;
