@@ -140,7 +140,7 @@ void matrix_scan_user(void) {
 
     // i3 new terminal
     SEQ_TWO_KEYS(KC_N, KC_E) {
-      SEND_STRING(SS_LALT(KC_ENTER));
+      SEND_STRING(SS_LALT(SS_TAP(X_ENTER)));
     }
     // i3 focus left
     SEQ_ONE_KEY(KC_N) {
