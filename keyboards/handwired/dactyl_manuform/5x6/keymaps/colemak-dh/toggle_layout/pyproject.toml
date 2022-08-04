@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "toggle_layout"
+version = "0.1.0"
+description = ""
+authors = ["Morphy Kuffour <morphy.kuffour@uconn.edu>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+hid = {git = "https://github.com/apmorton/pyhidapi"}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

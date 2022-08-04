@@ -29,3 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LEADER_TIMEOUT 250
 #define LEADER_PER_KEY_TIMING
 
+/* USB Device descriptor parameter */
+// #define VENDOR_ID 0x444d
+// #define PRODUCT_ID 0x3536
+#define RAW_USAGE_PAGE 0xFF60
+#define RAW_USAGE_ID 0x61
