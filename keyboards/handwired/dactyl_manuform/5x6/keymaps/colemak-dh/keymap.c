@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "features/select_word.h"
- 
+
 #define _BASE 0
 #define _SYMBOL 1
 #define _EXTEND 2
@@ -12,8 +12,8 @@
 #define SYM_ENT LT(_SYMBOL, KC_ENT)
 #define SPC_ALT MT(MOD_LALT, KC_SPACE)
 #define CTL_BSP MT(MOD_LCTL, KC_BSPC)
-#define EXTEND TG(_EXTEND) 
-#define QWERTY TG(_QWERTY) 
+#define EXTEND TG(_EXTEND)
+#define QWERTY TG(_QWERTY)
 
 // TODO better home row mods https://www.reddit.com/r/ErgoMechKeyboards/comments/weipet/my_homerow_mods_alternative/
 // #define HO_S MT(MOD_LALT,KC_S)
@@ -23,11 +23,11 @@
 
 #define CC_UNDO LCTL(KC_Z)
 #define CC_REDO LCTL(KC_Y)
-#define CC_CUT  LCTL(KC_X)
+#define CC_CUT LCTL(KC_X)
 
-// macros 
+// macros
 enum custom_keycodes {
-    UPDIR =  SAFE_RANGE,
+    UPDIR = SAFE_RANGE,
     PWDIR,
     GITST,
     GITGP,
@@ -38,6 +38,7 @@ enum custom_keycodes {
     COPY_PASTA,
     SELWORD,
 };
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT_5x6(
@@ -85,20 +86,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                          KC_BSPC, KC_GRV,                        KC_LGUI, QWERTY
     )
 };
-   
-// https://gist.github.com/NotGate/3e3d8ab81300a86522b2c2549f99b131 
+// https://gist.github.com/NotGate/3e3d8ab81300a86522b2c2549f99b131
 // Used to extract the basic tapping keycode from a dual-role key.
 // Example: GET_TAP_KC(MT(MOD_RSFT, KC_E)) == KC_E
 #define GET_TAP_KC(dual_role_key) dual_role_key & 0xFF
-uint16_t last_keycode = KC_NO;
-uint8_t last_modifier = 0;
+uint16_t last_keycode  = KC_NO;
+uint8_t  last_modifier = 0;
 
 // Initialize variables holding the bitfield
 // representation of active modifiers.
 uint8_t mod_state;
 uint8_t oneshot_mod_state;
 
-void process_repeat_key(uint16_t keycode, const keyrecord_t *record) {
+void process_repeat_key(uint16_t keycode, const keyrecord_t* record) {
     if (keycode != REPEAT) {
         // Early return when holding down a pure layer key
         // to retain modifiers
@@ -138,16 +138,16 @@ void process_repeat_key(uint16_t keycode, const keyrecord_t *record) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-
-  // if (!process_achordion(keycode, record)) { return false; }
-  // if (!process_autocorrection(keycode, record)) { return false; }
-  // if (!process_custom_shift_keys(keycode, record)) { return false; }
-  if (!process_select_word(keycode, record, SELWORD)) { return false; }
+    // if (!process_achordion(keycode, record)) { return false; }
+    // if (!process_autocorrection(keycode, record)) { return false; }
+    // if (!process_custom_shift_keys(keycode, record)) { return false; }
+    if (!process_select_word(keycode, record, SELWORD)) {
+        return false;
+    }
     process_repeat_key(keycode, record);
-    mod_state = get_mods();
+    mod_state         = get_mods();
     oneshot_mod_state = get_oneshot_mods();
 
-  if (record->event.pressed) {
     switch (keycode) {
         case COPY_PASTA:
             if (record->event.pressed) {
@@ -155,105 +155,117 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             } else {
                 SEND_STRING(SS_LCTL("v"));
             }
-            return true; // might cause issues not tested
-        case UPDIR:
-            SEND_STRING("../");
+            return false; // might cause issues not tested
+            if (record->event.pressed) {
+                case UPDIR:
+                    SEND_STRING("../");
+            }
             return false;
 
-        case PWDIR:  // pwd
-                SEND_STRING("pwd\r\n");
-              return false;
-
-        case GITST:  // git status
-                SEND_STRING("gs\r\n");
-              return false;
-
-        case GITGP:  // git status
-                SEND_STRING("gp\r\n");
-              return false;
-
-        case TMUXESC:  // Enter copy mode in Tmux.
-            SEND_STRING(SS_LCTL("a") SS_TAP(X_ESC));
+            if (record->event.pressed) {
+                case PWDIR: // pwd
+                    SEND_STRING("pwd\r\n");
+            }
             return false;
 
-          case SRCHSEL:  // Searches the current selection in a new tab.
-            // Mac users, change LCTL to LGUI.
-            SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+            if (record->event.pressed) {
+                case GITST: // git status
+                    SEND_STRING("gs\r\n");
+            }
             return false;
 
-          case JOINLN:  // Join lines like Vim's `J` command.
-            SEND_STRING( // Go to the end of the line and tap delete.
-                SS_TAP(X_END) SS_TAP(X_DEL)
-                // In case this has joined two words together, insert one space.
-                SS_TAP(X_SPC)
-                SS_LCTL(
-                  // Go to the beginning of the next word.
-                  SS_TAP(X_RGHT) SS_TAP(X_LEFT)
-                  // Select back to the end of the previous word. This should select
-                  // all spaces and tabs between the joined lines from indentation
-                  // or trailing whitespace, including the space inserted earlier.
-                  SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
-                // Replace the selection with a single space.
-                SS_TAP(X_SPC));
+            if (record->event.pressed) {
+                case GITGP: // git status
+                    SEND_STRING("gp\r\n");
+            }
+            return false;
+
+            if (record->event.pressed) {
+                case TMUXESC: // Enter copy mode in Tmux.
+                    SEND_STRING(SS_LCTL("a") SS_TAP(X_ESC));
+            }
+            return false;
+
+            if (record->event.pressed) {
+                case SRCHSEL: // Searches the current selection in a new tab.
+                    // Mac users, change LCTL to LGUI.
+                    SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
+            }
+            return false;
+
+            if (record->event.pressed) {
+                case JOINLN:     // Join lines like Vim's `J` command.
+                    SEND_STRING( // Go to the end of the line and tap delete.
+                        SS_TAP(X_END) SS_TAP(X_DEL)
+                        // In case this has joined two words together, insert one space.
+                        SS_TAP(X_SPC) SS_LCTL(
+                            // Go to the beginning of the next word.
+                            SS_TAP(X_RGHT) SS_TAP(X_LEFT)
+                            // Select back to the end of the previous word. This should select
+                            // all spaces and tabs between the joined lines from indentation
+                            // or trailing whitespace, including the space inserted earlier.
+                            SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT)))
+                        // Replace the selection with a single space.
+                        SS_TAP(X_SPC));
+            }
             return false;
     }
-  }
-  return true;
+}
+return true;
 }
 
 // use leader key with i3 window manager
 LEADER_EXTERNS();
 
 void matrix_scan_user(void) {
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-    // TODO move to sxhkd with MOD_MEH
+    LEADER_DICTIONARY() {
+        leading = false;
+        leader_end();
+        // TODO move to sxhkd with MOD_MEH
 
-    // i3 new terminal
-    SEQ_TWO_KEYS(KC_N, KC_E) {
-      SEND_STRING(SS_LALT(SS_TAP(X_ENTER)));
-    }
-    // i3 focus left
-    SEQ_ONE_KEY(KC_N) {
-      SEND_STRING(SS_LALT("h"));
-    }
-    // i3 move left
-    SEQ_TWO_KEYS(KC_N, KC_N) {
-      SEND_STRING(SS_LALT(SS_LSFT("h")));
-    }
-    
-    // i3 focus right
-    SEQ_ONE_KEY(KC_I) {
-      SEND_STRING(SS_LALT("l"));
-    }
-    // i3 move right
-    SEQ_TWO_KEYS(KC_I, KC_I) {
-      SEND_STRING(SS_LALT(SS_LSFT("l")));
-    }
+        // i3 new terminal
+        SEQ_TWO_KEYS(KC_N, KC_E) {
+            SEND_STRING(SS_LALT(SS_TAP(X_ENTER)));
+        }
+        // i3 focus left
+        SEQ_ONE_KEY(KC_N) {
+            SEND_STRING(SS_LALT("h"));
+        }
+        // i3 move left
+        SEQ_TWO_KEYS(KC_N, KC_N) {
+            SEND_STRING(SS_LALT(SS_LSFT("h")));
+        }
 
-    // i3 focus up
-    SEQ_ONE_KEY(KC_U) {
-      SEND_STRING(SS_LALT("k"));
-    }
-    // i3 move up
-    SEQ_TWO_KEYS(KC_U, KC_U) {
-      SEND_STRING(SS_LALT(SS_LSFT("k")));
-    }
+        // i3 focus right
+        SEQ_ONE_KEY(KC_I) {
+            SEND_STRING(SS_LALT("l"));
+        }
+        // i3 move right
+        SEQ_TWO_KEYS(KC_I, KC_I) {
+            SEND_STRING(SS_LALT(SS_LSFT("l")));
+        }
 
-    // i3 focus down
-    SEQ_ONE_KEY(KC_E) {
-      SEND_STRING(SS_LALT("j"));
-    }
-    // i3 move down
-    SEQ_TWO_KEYS(KC_E, KC_E) {
-      SEND_STRING(SS_LALT(SS_LSFT("j")));
-    }
+        // i3 focus up
+        SEQ_ONE_KEY(KC_U) {
+            SEND_STRING(SS_LALT("k"));
+        }
+        // i3 move up
+        SEQ_TWO_KEYS(KC_U, KC_U) {
+            SEND_STRING(SS_LALT(SS_LSFT("k")));
+        }
 
-    // i3 open flameshot
-    SEQ_ONE_KEY(KC_S) {
-      SEND_STRING(SS_LALT("s"));
+        // i3 focus down
+        SEQ_ONE_KEY(KC_E) {
+            SEND_STRING(SS_LALT("j"));
+        }
+        // i3 move down
+        SEQ_TWO_KEYS(KC_E, KC_E) {
+            SEND_STRING(SS_LALT(SS_LSFT("j")));
+        }
+
+        // i3 open flameshot
+        SEQ_ONE_KEY(KC_S) {
+            SEND_STRING(SS_LALT("s"));
+        }
     }
-  }
 }
-
