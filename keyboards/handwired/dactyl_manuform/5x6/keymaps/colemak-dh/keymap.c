@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "features/select_word.h"
-#include "raw_hid.h"
+// #include "raw_hid.h"
 #include "action_layer.h"
 
 #define _BASE 0
@@ -287,16 +287,16 @@ void matrix_scan_user(void) {
 // allow neovim lua api to toggle into _BASE when entering insert mode 
 // and toggle to _QWERTY in command mode
 // luahidapi
-void raw_hid_receive(uint8_t *data, uint8_t length) {
-    uint8_t *command_id = &(data[0]);
-    switch (*command_id) {
-        case 0:
-          // TG(_BASE);
-          layer_state_set(0);
-          break;
-        case 1:
-          // TG(_QWERTY);
-          layer_state_set(3);
-          break;
-    }
-}
+// void raw_hid_receive(uint8_t *data, uint8_t length) {
+//     uint8_t *command_id = &(data[0]);
+//     switch (*command_id) {
+//         case 0:
+//           // TG(_BASE);
+//           layer_move(0);
+//           break;
+//         case 1:
+//           // TG(_QWERTY);
+//           layer_move(3);
+//           break;
+//     }
+// }
