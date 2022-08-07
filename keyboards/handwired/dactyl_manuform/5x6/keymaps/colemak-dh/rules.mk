@@ -6,3 +6,4 @@ UNICODE_ENABLE = yes
 RAW_ENABLE = yes
 
 SRC += features/select_word.c
+SRC += features/achordion.c
