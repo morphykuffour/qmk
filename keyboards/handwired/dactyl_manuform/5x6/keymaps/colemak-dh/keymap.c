@@ -78,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                            UPDIR,PWDIR,                                                     GITST,GITGP,
                                         KC_BTN1,KC_BTN2,                        _______,_______,                        
                                         KC_BTN3,_______,                        _______,_______,                        
-                                        _______,_______,                        _______,_______
+                                        _______,_______,                        _______,RESET
     ),
   /*https://type-fu.com/app */
     [_QWERTY] = LAYOUT_5x6(
