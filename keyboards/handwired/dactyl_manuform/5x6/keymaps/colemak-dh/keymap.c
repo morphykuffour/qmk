@@ -1,6 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "features/select_word.h"
-#include "features/achordion.h"
+// #include "features/achordion.h"
 // #include "raw_hid.h"
 #include "action_layer.h"
 
@@ -10,8 +10,8 @@
 #define _QWERTY 3
 
 // custom keycodes
-#define ADV_VIM LT(_EXTEND, KC_ESC)
-#define NAV_SFT LT(_EXTEND,	KC_LSFT)
+#define ADV_VIM MT(MOD_LCTL, KC_ESC)
+#define NAV_SFT OSM(MOD_LSFT)
 #define SYM_ENT LT(_SYMBOL, KC_ENT)
 #define SPC_CTRL MT(MOD_LCTL, KC_SPACE)
 #define BSPC_ALT MT(MOD_LALT, KC_BSPC)
@@ -41,7 +41,7 @@ enum custom_keycodes {
     JOINLN,
     COPY_PASTA,
     SELWORD,
-    ALT_TAB,
+    /* ALT_TAB, */
 };
 
 // Generate keymap visualizations
@@ -72,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTEND] = LAYOUT_5x6(
           _______,_______,_______,_______,_______,_______,                        _______,_______,_______,_______,_______,_______, 
-          KC_WH_U,SELWORD,KC_WBAK,KC_MS_U,KC_WFWD,_______,                        JOINLN,_______,KC_UP,_______,_______,ALT_TAB,                          
+          KC_WH_U,SELWORD,KC_WBAK,KC_MS_U,KC_WFWD,_______,                        JOINLN,_______,KC_UP,_______,_______,_______,                          
           _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,                        _______,KC_LEFT,KC_DOWN,KC_RGHT,_______,_______,                        
           KC_WH_D,CC_UNDO,CC_REDO,CC_CUT,_______,COPY_PASTA,                      _______,_______,_______,_______,_______,TMUXESC,
                            UPDIR,PWDIR,                                                     GITST,GITGP,
@@ -145,7 +145,7 @@ void process_repeat_key(uint16_t keycode, const keyrecord_t* record) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    if (!process_achordion(keycode, record)) { return false; }
+    // if (!process_achordion(keycode, record)) { return false; }
     // if (!process_autocorrection(keycode, record)) { return false; }
     // if (!process_custom_shift_keys(keycode, record)) { return false; }
     if (!process_select_word(keycode, record, SELWORD)) {
@@ -205,17 +205,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 SEND_STRING(SS_TAP(X_END) SS_TAP(X_DEL) SS_TAP(X_SPC) SS_LCTL(SS_TAP(X_RGHT) SS_TAP(X_LEFT) SS_LSFT(SS_TAP(X_LEFT) SS_TAP(X_RGHT))) SS_TAP(X_SPC));
             }
             return false;
-        case ALT_TAB:
-            if (record->event.pressed) {
-                if (!is_alt_tab_active) {
-                    is_alt_tab_active = true;
-                    register_code(KC_LALT);
-                }
-                alt_tab_timer = timer_read();
-                register_code(KC_TAB);
-            } else {
-                unregister_code(KC_TAB);
-            }
+        // case ALT_TAB:
+        //     if (record->event.pressed) {
+        //         if (!is_alt_tab_active) {
+        //             is_alt_tab_active = true;
+        //             register_code(KC_LALT);
+        //         }
+        //         alt_tab_timer = timer_read();
+        //         register_code(KC_TAB);
+        //     } else {
+        //         unregister_code(KC_TAB);
+        //     }
             break;
     }
     return true;
@@ -226,14 +226,12 @@ LEADER_EXTERNS();
 
 void matrix_ecan_user(void) {
 
-  achordion_task();
-
-  if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 1000) {
-      unregister_code(KC_LALT);
-      is_alt_tab_active = false;
-    }
-  }
+  // if (is_alt_tab_active) {
+  //   if (timer_elapsed(alt_tab_timer) > 1000) {
+  //     unregister_code(KC_LALT);
+  //     is_alt_tab_active = false;
+  //   }
+  // }
 
     LEADER_DICTIONARY() {
         leading = false;
