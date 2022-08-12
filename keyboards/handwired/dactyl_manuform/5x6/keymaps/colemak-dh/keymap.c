@@ -287,7 +287,7 @@ void matrix_ecan_user(void) {
 
 // allow neovim lua api to toggle into _BASE when entering insert mode 
 // and toggle to _QWERTY in command mode
-// luahidapi
+// luahidapi or rust hidapi
 // void raw_hid_receive(uint8_t *data, uint8_t length) {
 //     uint8_t *command_id = &(data[0]);
 //     switch (*command_id) {
