@@ -17,6 +17,7 @@
 #define BSPC_ALT MT(MOD_LALT, KC_BSPC)
 #define EXTEND TG(_EXTEND)
 #define QWERTY TG(_QWERTY)
+#define MEH LCTL(LSFT(LALT(KC_NO)))
 
 #define CC_UNDO LCTL(KC_Z)
 #define CC_REDO LCTL(KC_Y)
