@@ -30,6 +30,7 @@ OPT_DEFS += -DNO_USB_STARTUP_CHECK -DENABLE_FACTORY_TEST
 
 CUSTOM_MATRIX = lite
 SRC += matrix.c
+SRC += features/select_word.c
 
 include keyboards/keychron/bluetooth/bluetooth.mk
 
